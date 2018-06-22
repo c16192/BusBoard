@@ -23,6 +23,10 @@ app.get('/closestStops', function (req, res) {
         res.send(JSON.stringify(data));
     });
 });
+app.get('/', function (req, res) {
+    res.sendfile("./workspace/view/index.html");
+});
+app.use(express.static('./workspace/view'));
 app.listen(3000, function () { return console.log('Example app listening on port 3000!'); });
 module.exports = app;
 //# sourceMappingURL=server.js.map

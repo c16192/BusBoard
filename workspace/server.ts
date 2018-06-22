@@ -1,7 +1,5 @@
 import {Busstopmap} from "./busstopmap";
-import {BusStop} from "./busstop";
 import {Location} from "./location";
-import {NextBus} from "./nextBus";
 
 const express = require('express')
 const app = express()
@@ -25,7 +23,10 @@ app.get('/closestStops', (req, res) => {
         res.send(JSON.stringify(data))
     });
 })
-
+app.get('/', (req,res)=>{
+    res.sendfile("./workspace/view/index.html")
+})
+app.use(express.static('./workspace/view'))
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
 
