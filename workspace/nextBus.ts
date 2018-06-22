@@ -1,4 +1,4 @@
-export interface nextBus {
+export interface NextBus {
     line: string;
     timeToArrive: number;
 }

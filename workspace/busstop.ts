@@ -1,5 +1,5 @@
 const request = require('request');
-import {nextBus} from "./nextBus";
+import {NextBus} from "./nextBus";
 
 export class BusStop {
     public stationName: string;
@@ -13,7 +13,7 @@ export class BusStop {
         return busSequence
     }
 
-    public getBusSequence(num: number): Promise<nextBus[]>{
+    public getAllNextBuses(num: number): Promise<NextBus[]>{
         return new Promise((resolve)=>{
             const baseUrl:string = "https://api.tfl.gov.uk/StopPoint/";
             const endpoint:string = "/Arrivals";
@@ -33,8 +33,19 @@ export class BusStop {
         });
     }
 
-    public formatResults(result: any[]): nextBus[]{
-        const nextBuses: nextBus[]= [];
+    public getNextBuses() {
+        return this.getAllNextBuses(5)
+            .then((nextBuses: NextBus[]) => {
+                let busstopName: string = this.stationName;
+                if (this.platformName != 'null') {
+                    busstopName += " platform " + this.platformName;
+                }
+                return {"busstopName": busstopName,"nextBuses": nextBuses};
+            });
+    }
+
+    public formatResults(result: any[]): NextBus[]{
+        const nextBuses: NextBus[]= [];
         result.forEach((item)=>{
             nextBuses.push({line: item.lineName, timeToArrive: item.timeToStation})
         })

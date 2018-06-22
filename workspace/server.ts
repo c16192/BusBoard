@@ -1,7 +1,7 @@
 import {Busstopmap} from "./busstopmap";
 import {BusStop} from "./busstop";
 import {Location} from "./location";
-import {nextBus} from "./nextBus";
+import {NextBus} from "./nextBus";
 
 const express = require('express')
 const app = express()
@@ -10,37 +10,20 @@ app.get('/closestStops', (req, res) => {
     const postcode: string = req.query.postcode;
     const location = new Location();
     location.initByPostcode(postcode)
-        .catch((err)=>{
-            console.log(err);
-            res.send(err);
+        .catch((err) => {
+            throw err;
         })
-        .then(() => {
-            const busstopmap = new Busstopmap();
-            busstopmap.findBusstopsNearby(location, 2)
-                .then(() => {
-                    let output = "";
-                    const resultPromises: Promise<any>[] = [];
-                    busstopmap.stopIds.forEach((stopId) => {
-                        const busstop = new BusStop(stopId);
-                        const resultPromise = busstop.getBusSequence(5)
-                            .then((nextBuses: nextBus[]) => {
-                                let busstopName: string = busstop.stationName;
-                                if (busstop.platformName != 'null') {
-                                    busstopName += " platform " + busstop.platformName;
-                                }
-                                output += JSON.stringify(busstopName);
-                                output += JSON.stringify(nextBuses);
-                            });
-                        resultPromises.push(resultPromise);
-                    })
-                    Promise.all(resultPromises).then((resolve) => {
-                        res.send(output);
-                    })
-                });
-
-        }).catch((err)=>{
-            res.send("Unknown error!!!!");
+        .then((): Promise<any[]> => {
+            return new Busstopmap(location).getBusesFromPostcode(2);
+        })
+        .catch((err) => {
+        throw err;
     })
+    .then((data)=>{
+                        // here we will parse output
+        console.log(data);
+        res.send(JSON.stringify(data))
+    });
 })
 
 

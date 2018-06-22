@@ -11,7 +11,7 @@ var BusStop = /** @class */ (function () {
         });
         return busSequence;
     };
-    BusStop.prototype.getBusSequence = function (num) {
+    BusStop.prototype.getAllNextBuses = function (num) {
         var _this = this;
         return new Promise(function (resolve) {
             var baseUrl = "https://api.tfl.gov.uk/StopPoint/";
@@ -26,6 +26,17 @@ var BusStop = /** @class */ (function () {
                 var nextBuses = _this.formatResults(allResults.slice(0, 5));
                 resolve(nextBuses);
             });
+        });
+    };
+    BusStop.prototype.getNextBuses = function () {
+        var _this = this;
+        return this.getAllNextBuses(5)
+            .then(function (nextBuses) {
+            var busstopName = _this.stationName;
+            if (_this.platformName != 'null') {
+                busstopName += " platform " + _this.platformName;
+            }
+            return { "busstopName": busstopName, "nextBuses": nextBuses };
         });
     };
     BusStop.prototype.formatResults = function (result) {

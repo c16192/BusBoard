@@ -1,7 +1,7 @@
 import {BusStop} from "./workspace/busstop"
 import {Location} from "./workspace/location"
 import {Busstopmap} from "./workspace/busstopmap";
-import {nextBus} from "./workspace/nextBus";
+import {NextBus} from "./workspace/nextBus";
 const app = require("./workspace/server");
 
 const readlineSync = require('readline-sync');

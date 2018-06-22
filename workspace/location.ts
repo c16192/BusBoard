@@ -11,7 +11,6 @@ export class Location {
 
             request(url, (error, response, body) => {
                 const result = JSON.parse(body);
-                console.log(result);
                 if(result.status == 200){
                     this.lng = result.result.longitude;
                     this.lat = result.result.latitude;

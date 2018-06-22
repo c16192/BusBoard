@@ -11,7 +11,6 @@ var Location = /** @class */ (function () {
             var url = baseurl + postcode;
             request(url, function (error, response, body) {
                 var result = JSON.parse(body);
-                console.log(result);
                 if (result.status == 200) {
                     _this.lng = result.result.longitude;
                     _this.lat = result.result.latitude;
