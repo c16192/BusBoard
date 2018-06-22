@@ -9,6 +9,8 @@
   "author": "tal",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^8.0.8"
+    "@types/node": "^8.0.8",
+    "readline-sync": "^1.4.9",
+    "request": "^2.87.0"
   }
 }
