@@ -11,9 +11,16 @@ export class Location {
 
             request(url, (error, response, body) => {
                 const result = JSON.parse(body);
-                this.lng = result.result.longitude;
-                this.lat = result.result.latitude;
-                resolve()
+                console.log(result);
+                if(result.status == 200){
+                    this.lng = result.result.longitude;
+                    this.lat = result.result.latitude;
+                    resolve()
+                } else if(result.status == 404) {
+                    reject(result.error)
+                } else {
+                    reject("Unknown error occurred");
+                }
             });
         })
 

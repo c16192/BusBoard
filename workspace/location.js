@@ -11,9 +11,18 @@ var Location = /** @class */ (function () {
             var url = baseurl + postcode;
             request(url, function (error, response, body) {
                 var result = JSON.parse(body);
-                _this.lng = result.result.longitude;
-                _this.lat = result.result.latitude;
-                resolve();
+                console.log(result);
+                if (result.status == 200) {
+                    _this.lng = result.result.longitude;
+                    _this.lat = result.result.latitude;
+                    resolve();
+                }
+                else if (result.status == 404) {
+                    reject(result.error);
+                }
+                else {
+                    reject("Unknown error occurred");
+                }
             });
         });
     };
