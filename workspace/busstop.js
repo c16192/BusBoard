@@ -13,15 +13,19 @@ var BusStop = /** @class */ (function () {
     };
     BusStop.prototype.getBusSequence = function (num) {
         var _this = this;
-        var baseUrl = "https://api.tfl.gov.uk/StopPoint/";
-        var endpoint = "/Arrivals";
-        var appId = "app_id=70bf8eaf";
-        var appKey = "app_key=f9015c45cebfaf6aee020c196310c4a0";
-        var url = baseUrl + this.stopId + endpoint + "?" + appId + "&" + appKey;
-        request(url, function (error, response, body) {
-            var allResults = _this.sortByTime(JSON.parse(body));
-            var nextBuses = _this.formatResults(allResults.slice(0, 5));
-            console.log(nextBuses);
+        return new Promise(function (resolve) {
+            var baseUrl = "https://api.tfl.gov.uk/StopPoint/";
+            var endpoint = "/Arrivals";
+            var appId = "app_id=70bf8eaf";
+            var appKey = "app_key=f9015c45cebfaf6aee020c196310c4a0";
+            var url = baseUrl + _this.stopId + endpoint + "?" + appId + "&" + appKey;
+            request(url, function (error, response, body) {
+                var allResults = _this.sortByTime(JSON.parse(body));
+                _this.stationName = allResults[0].stationName;
+                _this.platformName = allResults[0].platformName;
+                var nextBuses = _this.formatResults(allResults.slice(0, 5));
+                resolve(nextBuses);
+            });
         });
     };
     BusStop.prototype.formatResults = function (result) {

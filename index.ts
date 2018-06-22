@@ -1,6 +1,8 @@
 import {BusStop} from "./workspace/busstop"
 import {Location} from "./workspace/location"
 import {Busstopmap} from "./workspace/busstopmap";
+import {nextBus} from "./workspace/nextBus";
+
 const readlineSync = require('readline-sync');
 
 export class Index {
@@ -11,11 +13,22 @@ export class Index {
         const location = new Location();
         location.initByPostcode(stopPostcode)
             .then( ()=> {
-                new Busstopmap().findBusstopsNearby(location, 2);
+                const busstopmap = new Busstopmap();
+                busstopmap.findBusstopsNearby(location, 2).then(()=>{
+                    busstopmap.stopIds.forEach((stopId)=>{
+                        const busstop = new BusStop(stopId);
+                        busstop.getBusSequence(5).then((nextBuses: nextBus[])=>{
+                            let busstopName:string = busstop.stationName;
+                            if(busstop.platformName != 'null'){
+                                busstopName += " platform " +  busstop.platformName;
+                            }
+                            console.log(busstopName);
+                            console.log(nextBuses);
+                        });
+                    });
+                })
             }
             )
-        //const busstop = new BusStop(stopId);
-        //busstop.getBusSequence(5);
         return 0;
     }
 }
