@@ -38,4 +38,5 @@ export class BusStop {
         })
         return nextBuses;
     }
+
 }
