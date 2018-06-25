@@ -12,15 +12,19 @@ function getStopData() {
     if (response.status == 200) {
         let data = response.data
         let htmlContent = "";
+
+        htmlContent += "<div class='row'>"
         for (item of data) {
-            htmlContent += "<h2>" + item.busstopName + "</h2>"
-            htmlContent += "<h2>Next Buses</h2>"
+            htmlContent += "<div class='col-md-6'>"
+            htmlContent += `<h2 class="text-center">${item.busstopName}</h2>`
             htmlContent += "<table class='table'><tr><th scope='col'>Line Number</th><th scope='col'>Time to arrive</th></tr>";
             for (bus of item.nextBuses) {
                 htmlContent += "<tr><td>" + bus.line + "</td><td>" + bus.timeToArrive + "</td></tr>";
             }
             htmlContent += "</table>"
+            htmlContent += "</div>"
         }
+        htmlContent += "</div>"
         document.getElementById("content").innerHTML = htmlContent;
     } else {
         let err = response.data;

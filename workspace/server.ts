@@ -55,6 +55,8 @@ app.get('/', (req,res)=>{
 })
 app.use(express.static('./workspace/view'))
 
+app.use(express.static('./workspace/public'))
+
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
 
 
