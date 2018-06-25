@@ -1,6 +1,7 @@
 import {Busstopmap} from "./busstopmap";
 import {Location} from "./location";
 import {Line} from "./line"
+import {Request, Response} from "express";
 
 const express = require('express')
 const app = express()
@@ -40,11 +41,8 @@ app.get('/closestStops', (req, res) => {
 })
 // app.use(express.json());
 // app.use(express.urlencoded());
-function santisePostcode(rawPostcode) {
-    return rawPostcode.replace(/\s+/g, '');
-}
 
-app.get('/', (req,res)=>{
+app.get('/', (req: Request, res: Response)=>{
     let rawPostcode = req.query.postcode;
     console.log(rawPostcode)
     if (rawPostcode == undefined) {
@@ -54,6 +52,10 @@ app.get('/', (req,res)=>{
         res.redirect('/index.html?postcode=' + postcode)
     }
 })
+
+function santisePostcode(rawPostcode) {
+    return rawPostcode.replace(/\s+/g, '');
+}
 
 app.get('/line', (req,res)=>{
     let rawLineId = req.query.lineId;

@@ -10,6 +10,7 @@ function createLineMap() {
     console.log(response)
     if (response.status == 200) {
         let data = response.data
+        console.log(data);
         document.getElementById("content").innerHTML = data;
     } else {
         let err = response.data;
@@ -18,4 +19,4 @@ function createLineMap() {
 
     }
 }
-window.onload = getStopData;
+window.onload = createLineMap;

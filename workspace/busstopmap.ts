@@ -1,6 +1,6 @@
 import {Location} from "./location"
 import {NextBus} from "./nextBus";
-import {BusStop} from "./busstop";
+import {BusStop, StopNameWithFutureBuses} from "./busstop";
 
 const request = require('request');
 
@@ -24,25 +24,22 @@ export class Busstopmap {
             request(url, (error, response, body) => {
                 const busstops = JSON.parse(body).stopPoints;
                 const nearestBusstops = this.sortByDistance(busstops).slice(0, num)
-                const nearestBusstopIds = nearestBusstops.map((stop)=>{return stop.id})
-                this.stopIds = nearestBusstopIds
+                this.stopIds = nearestBusstops.map((stop) => stop.id)
                 resolve();
             });
 
         })
     }
 
-    public getBusesFromPostcode(num: number): Promise<any[]> {
+    public getBusesFromPostcode(num: number): Promise<StopNameWithFutureBuses[]> {
         return this.findBusstopsNearby(num)
-            .then((): Promise<any[]> => {
-                const resultPromises: Promise<any>[] = [];
+            .then((): Promise<StopNameWithFutureBuses[]> => {
+                const resultPromises: Promise<StopNameWithFutureBuses>[] = [];
                 this.stopIds.forEach((stopId) => {
                     const nextBuses = new BusStop(stopId).getNextBuses();
                     resultPromises.push(nextBuses);
                 });
-                return Promise.all(resultPromises).then((data): any[] => {
-                    return data;
-                })
+                return Promise.all(resultPromises)
             });
     }
 

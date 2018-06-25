@@ -21,8 +21,7 @@ var Busstopmap = /** @class */ (function () {
             request(url, function (error, response, body) {
                 var busstops = JSON.parse(body).stopPoints;
                 var nearestBusstops = _this.sortByDistance(busstops).slice(0, num);
-                var nearestBusstopIds = nearestBusstops.map(function (stop) { return stop.id; });
-                _this.stopIds = nearestBusstopIds;
+                _this.stopIds = nearestBusstops.map(function (stop) { return stop.id; });
                 resolve();
             });
         });
@@ -36,9 +35,7 @@ var Busstopmap = /** @class */ (function () {
                 var nextBuses = new busstop_1.BusStop(stopId).getNextBuses();
                 resultPromises.push(nextBuses);
             });
-            return Promise.all(resultPromises).then(function (data) {
-                return data;
-            });
+            return Promise.all(resultPromises);
         });
     };
     Busstopmap.prototype.sortByDistance = function (busstops) {

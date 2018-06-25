@@ -40,9 +40,6 @@ app.get('/closestStops', function (req, res) {
 });
 // app.use(express.json());
 // app.use(express.urlencoded());
-function santisePostcode(rawPostcode) {
-    return rawPostcode.replace(/\s+/g, '');
-}
 app.get('/', function (req, res) {
     var rawPostcode = req.query.postcode;
     console.log(rawPostcode);
@@ -54,6 +51,9 @@ app.get('/', function (req, res) {
         res.redirect('/index.html?postcode=' + postcode);
     }
 });
+function santisePostcode(rawPostcode) {
+    return rawPostcode.replace(/\s+/g, '');
+}
 app.get('/line', function (req, res) {
     var rawLineId = req.query.lineId;
     console.log(rawLineId);

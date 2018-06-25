@@ -1,6 +1,11 @@
 const request = require('request');
 import {NextBus} from "./nextBus";
 
+export interface StopNameWithFutureBuses {
+    busstopName: string;
+    nextBuses: NextBus[]
+}
+
 export class BusStop {
     public stationName: string;
     public platformName: string;
@@ -33,7 +38,7 @@ export class BusStop {
         });
     }
 
-    public getNextBuses() {
+    public getNextBuses(): Promise<StopNameWithFutureBuses> {
         return this.getAllNextBuses(5)
             .then((nextBuses: NextBus[]) => {
                 let busstopName: string = this.stationName;
