@@ -1,5 +1,6 @@
 import {Busstopmap} from "./busstopmap";
 import {Location} from "./location";
+import {Line} from "./line"
 
 const express = require('express')
 const app = express()
@@ -51,6 +52,32 @@ app.get('/', (req,res)=>{
     } else {
         let postcode = santisePostcode(rawPostcode);
         res.redirect('/index.html?postcode=' + postcode)
+    }
+})
+
+app.get('/line', (req,res)=>{
+    let rawLineId = req.query.lineId;
+    console.log(rawLineId)
+    if (rawLineId == undefined) {
+        res.send('empty')
+    } else {
+        const line = new Line("c2");
+        line.getAllStops().then((data)=>{
+            res.send({status: 200, data: data});
+        }).catch((err)=>{
+            res.send({status: 404, data: err});
+        })
+    }
+})
+
+app.get("/linemap", (req, res) => {
+    let rawLineId = req.query.lineId;
+    console.log(rawLineId)
+    if (rawLineId == undefined) {
+        res.redirect('/linemap.html')
+    } else {
+        let lineId = rawLineId;
+        res.redirect('/linemap.html?lineId=' + lineId)
     }
 })
 app.use(express.static('./workspace/view'))

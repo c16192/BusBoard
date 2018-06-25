@@ -1,3 +1,13 @@
 body {
     background-image: url("../img/bus_bg.jpg");
 }
+h1.title {
+    text-align: center;
+}
+td.arrivingSoon {
+    background-color: darkred;
+    color: lightcoral;
+}
+.jumbotron {
+    background-color:rgba(255, 255, 255, 0.9);
+}
