@@ -7,11 +7,8 @@ var Busstopmap = /** @class */ (function () {
         this.location = location;
     }
     Busstopmap.prototype.findBusstopsNearby = function (num) {
-        var _this = this;
-        return new Promise(function (resolve) {
-            var url = _this.buildURL();
-            return _this.setStopIds(url, num);
-        });
+        var url = this.buildURL();
+        return this.setStopIds(url, num);
     };
     Busstopmap.prototype.setStopIds = function (url, num) {
         var _this = this;
@@ -37,16 +34,16 @@ var Busstopmap = /** @class */ (function () {
         return url;
     };
     Busstopmap.prototype.getBusesFromPostcode = function (num) {
-        var _this = this;
         return this.findBusstopsNearby(num)
-            .then(function () {
-            var resultPromises = [];
-            _this.stopIds.forEach(function (stopId) {
-                var nextBuses = new busstop_1.BusStop(stopId).getNextBuses();
-                resultPromises.push(nextBuses);
-            });
-            return Promise.all(resultPromises);
+            .then(this.getNextBusesPromises);
+    };
+    Busstopmap.prototype.getNextBusesPromises = function () {
+        var resultPromises = [];
+        this.stopIds.forEach(function (stopId) {
+            var nextBuses = new busstop_1.BusStop(stopId).getNextBuses();
+            resultPromises.push(nextBuses);
         });
+        return Promise.all(resultPromises);
     };
     Busstopmap.prototype.sortByDistance = function (busstops) {
         busstops.sort(function (a, b) {

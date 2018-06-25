@@ -9,13 +9,11 @@ export class Busstopmap {
     constructor(public location: Location){}
 
     public findBusstopsNearby(num: number):Promise<void> {
-        return new Promise((resolve)=> {
             const url = this.buildURL();
             return this.setStopIds(url, num);
-        })
     }
 
-    private setStopIds(url, num){
+    private setStopIds(url: string, num: number): Promise<void>{
         return new Promise((resolve)=> {
             request(url, (error, response, body) => {
                 const busstops = JSON.parse(body).stopPoints;
@@ -41,14 +39,16 @@ export class Busstopmap {
 
     public getBusesFromPostcode(num: number): Promise<StopNameWithFutureBuses[]> {
         return this.findBusstopsNearby(num)
-            .then((): Promise<StopNameWithFutureBuses[]> => {
-                const resultPromises: Promise<StopNameWithFutureBuses>[] = [];
-                this.stopIds.forEach((stopId) => {
-                    const nextBuses = new BusStop(stopId).getNextBuses();
-                    resultPromises.push(nextBuses);
-                });
-                return Promise.all(resultPromises)
-            });
+            .then(this.getNextBusesPromises);
+    }
+
+    private getNextBusesPromises(): Promise<StopNameWithFutureBuses[]> {
+        const resultPromises: Promise<StopNameWithFutureBuses>[] = [];
+        this.stopIds.forEach((stopId) => {
+            const nextBuses = new BusStop(stopId).getNextBuses();
+            resultPromises.push(nextBuses);
+        });
+        return Promise.all(resultPromises)
     }
 
     public sortByDistance(busstops: any){
