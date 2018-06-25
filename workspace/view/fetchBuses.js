@@ -1,3 +1,5 @@
+const baseURL = "http://127.0.0.1:3000"
+
 function toMinutesSeconds(inputAsSeconds){
     inputAsInt = parseInt(inputAsSeconds, 10)
     let minutes = Math.floor(inputAsInt / 60)
@@ -28,7 +30,8 @@ function getStopData() {
         document.getElementById("content").innerHTML = "Enter a post code so that we can find the closest bus stops for you!"
     } else {
         const xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "http://127.0.0.1:3000/closestStops?postcode="+postcode, false);
+
+        xhttp.open("GET", baseURL + "/closestStops?postcode="+postcode, false);
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.send();
         const response = JSON.parse(xhttp.responseText);
