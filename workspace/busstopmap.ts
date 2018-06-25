@@ -1,6 +1,7 @@
 import {Location} from "./location"
-import {NextBus} from "./nextBus";
-import {BusStop, StopNameWithFutureBuses} from "./busstop";
+import {NextBus} from "./interfaces/NextBus";
+import {BusStop} from "./busstop";
+import {StopNameWithFutureBuses} from "./interfaces/StopNameWithFutureBuses";
 const request = require('request');
 
 export class Busstopmap {
@@ -37,12 +38,12 @@ export class Busstopmap {
         return url;
     }
 
-    public getBusesFromPostcode(num: number): Promise<StopNameWithFutureBuses[]> {
+    public getBusesFromPostcode = (num: number): Promise<StopNameWithFutureBuses[]> => {
         return this.findBusstopsNearby(num)
             .then(this.getNextBusesPromises);
     }
 
-    private getNextBusesPromises(): Promise<StopNameWithFutureBuses[]> {
+    private getNextBusesPromises = (): Promise<StopNameWithFutureBuses[]> => {
         const resultPromises: Promise<StopNameWithFutureBuses>[] = [];
         this.stopIds.forEach((stopId) => {
             const nextBuses = new BusStop(stopId).getNextBuses();

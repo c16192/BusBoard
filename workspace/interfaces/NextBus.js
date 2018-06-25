@@ -1,3 +1,3 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//# sourceMappingURL=nextBus.js.map
+//# sourceMappingURL=NextBus.js.map

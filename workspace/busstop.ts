@@ -1,10 +1,7 @@
-const request = require('request');
-import {NextBus} from "./nextBus";
+import {StopNameWithFutureBuses} from "./interfaces/StopNameWithFutureBuses";
+import {NextBus} from "./interfaces/NextBus";
 
-export interface StopNameWithFutureBuses {
-    busstopName: string;
-    nextBuses: NextBus[]
-}
+const request = require('request');
 
 export class BusStop {
     public stationName: string;

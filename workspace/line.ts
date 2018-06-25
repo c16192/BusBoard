@@ -1,4 +1,4 @@
-import {NextBus} from "./nextBus";
+import {NextBus} from "./interfaces/NextBus";
 const request = require('request');
 
 export class Line {

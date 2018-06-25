@@ -4,7 +4,20 @@ var busstop_1 = require("./busstop");
 var request = require('request');
 var Busstopmap = /** @class */ (function () {
     function Busstopmap(location) {
+        var _this = this;
         this.location = location;
+        this.getBusesFromPostcode = function (num) {
+            return _this.findBusstopsNearby(num)
+                .then(_this.getNextBusesPromises);
+        };
+        this.getNextBusesPromises = function () {
+            var resultPromises = [];
+            _this.stopIds.forEach(function (stopId) {
+                var nextBuses = new busstop_1.BusStop(stopId).getNextBuses();
+                resultPromises.push(nextBuses);
+            });
+            return Promise.all(resultPromises);
+        };
     }
     Busstopmap.prototype.findBusstopsNearby = function (num) {
         var url = this.buildURL();
@@ -32,18 +45,6 @@ var Busstopmap = /** @class */ (function () {
             + "&lat="
             + this.location.lat.toString();
         return url;
-    };
-    Busstopmap.prototype.getBusesFromPostcode = function (num) {
-        return this.findBusstopsNearby(num)
-            .then(this.getNextBusesPromises);
-    };
-    Busstopmap.prototype.getNextBusesPromises = function () {
-        var resultPromises = [];
-        this.stopIds.forEach(function (stopId) {
-            var nextBuses = new busstop_1.BusStop(stopId).getNextBuses();
-            resultPromises.push(nextBuses);
-        });
-        return Promise.all(resultPromises);
     };
     Busstopmap.prototype.sortByDistance = function (busstops) {
         busstops.sort(function (a, b) {
