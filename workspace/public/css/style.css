@@ -11,3 +11,7 @@ td.arrivingSoon {
 .jumbotron {
     background-color:rgba(255, 255, 255, 0.9);
 }
+#map {
+    height: 60vh;
+    width: 100%;
+}

@@ -18,7 +18,7 @@ function generateRow(bus) {
         timeStyle = "class='arrivingSoon'"
     }
     let timeToArrive = toMinutesSeconds(bus.timeToArrive)
-    let newBitOfContent = `<tr><td ${timeStyle}>${bus.line}</td><td ${timeStyle}>${timeToArrive}</td></tr>`;
+    let newBitOfContent = `<tr><td ${timeStyle}><a href="/linemap?lineId=${bus.line}">${bus.line}</a></td><td ${timeStyle}>${timeToArrive}</td></tr>`;
     return newBitOfContent;
 }
 
@@ -26,7 +26,7 @@ function getStopData() {
     const url = new URL(window.location.href);
     let postcode = url.searchParams.get('postcode');
     document.getElementById("content").innerHTML = postcode;
-    if (postcode === "") {
+    if (postcode === "" || postcode == undefined) {
         document.getElementById("content").innerHTML = "Enter a post code so that we can find the closest bus stops for you!"
     } else {
         const xhttp = new XMLHttpRequest();
@@ -37,17 +37,23 @@ function getStopData() {
         const response = JSON.parse(xhttp.responseText);
         console.log(response);
         if (response.status === 200) {
+            document.getElementById("title").innerText = `Buses Near ${postcode.toUpperCase()}`
             let data = response.data
             let htmlContent = "";
-            for (item of data) {
-                htmlContent += "<div class='col-md-6'>"
-                htmlContent += `<h4 class="text-center">${item.busstopName}</h4>`
-                htmlContent += "<table class='table'><tr><th scope='col'>Line Number</th><th scope='col'>Time to arrive (seconds)</th></tr>";
-                for (let bus of item.nextBuses) {
-                    htmlContent += generateRow(bus);
+            console.log(data);
+            if (data.length === 0){
+                htmlContent += "<p>Sorry, no nearby bus stops found</p>"
+            } else {
+                for (item of data) {
+                    htmlContent += "<div class='col-md-6'>"
+                    htmlContent += `<h4 class="text-center">${item.busstopName}</h4>`
+                    htmlContent += "<table class='table'><tr><th scope='col'>Line Number</th><th scope='col'>Time to arrive</th></tr>";
+                    for (let bus of item.nextBuses) {
+                        htmlContent += generateRow(bus);
+                    }
+                    htmlContent += "</table>"
+                    htmlContent += "</div>"
                 }
-                htmlContent += "</table>"
-                htmlContent += "</div>"
             }
             document.getElementById("content").innerHTML = htmlContent;
         } else {
