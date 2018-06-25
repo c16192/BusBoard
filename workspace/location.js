@@ -17,6 +17,7 @@ var Location = /** @class */ (function () {
                     resolve();
                 }
                 else if (result.status == 404) {
+                    console.log("rejected in initByPostcode");
                     reject(result.error);
                 }
                 else {

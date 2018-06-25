@@ -9,16 +9,24 @@ function getStopData() {
     xhttp.send();
     var response = JSON.parse(xhttp.responseText);
     console.log(response)
-    let htmlContent = "";
-    for (item of response) {
-        htmlContent += "<h2>"+item.busstopName+"</h2>"
-        htmlContent += "<h2>Next Buses</h2>"
-        htmlContent += "<table><th><td>Line Number</td><td>Time to arrive</td></th>";
-        for (bus of item.nextBuses) {
-            htmlContent += "<tr><td>"+ bus.line + "</td><td>"+ bus.timeToArrive +"</td></tr>";
+    if (response.status == 200) {
+        let data = response.data
+        let htmlContent = "";
+        for (item of data) {
+            htmlContent += "<h2>" + item.busstopName + "</h2>"
+            htmlContent += "<h2>Next Buses</h2>"
+            htmlContent += "<table class='table'><tr><th scope='col'>Line Number</th><th scope='col'>Time to arrive</th></tr>";
+            for (bus of item.nextBuses) {
+                htmlContent += "<tr><td>" + bus.line + "</td><td>" + bus.timeToArrive + "</td></tr>";
+            }
+            htmlContent += "</table>"
         }
-        htmlContent += "</table>"
+        document.getElementById("content").innerHTML = htmlContent;
+    } else {
+        let err = response.data;
+
+        document.getElementById("content").innerHTML = err;
+
     }
-    document.getElementById("content").innerHTML = htmlContent;
 }
 window.onload = getStopData;

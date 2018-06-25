@@ -16,6 +16,7 @@ export class Location {
                     this.lat = result.result.latitude;
                     resolve()
                 } else if(result.status == 404) {
+                    console.log("rejected in initByPostcode")
                     reject(result.error)
                 } else {
                     reject("Unknown error occurred");

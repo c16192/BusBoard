@@ -12,24 +12,34 @@ app.get('/closestStops', (req, res) => {
     const postcode: string = req.query.postcode;
     const location = new Location();
     location.initByPostcode(postcode)
-        .catch((err) => {
-            throw err;
-        })
         .then((): Promise<any[]> => {
-            return new Busstopmap(location).getBusesFromPostcode(2);
+                return new Busstopmap(location).getBusesFromPostcode(2);
+            }, (err) => {
+                console.log("first catch")
+                console.log(err)
+                throw err
+            }
+        )
+        .catch((err) => {
+            console.log("second catch")
+            console.log(err)
+            throw err
+        })
+        .then((data)=>{
+                            // here we will parse output
+            console.log("foo")
+            console.log(data);
+            res.send(JSON.stringify({status: 200, data: data}))
         })
         .catch((err) => {
-        throw err;
-    })
-    .then((data)=>{
-                        // here we will parse output
-        console.log(data);
-        res.send(JSON.stringify(data))
-    });
+            console.log("third catch")
+            console.log(err)
+            res.send(JSON.stringify({status: 404, data: err}));
+        });
 })
 // app.use(express.json());
 // app.use(express.urlencoded());
-function santisiePostcode(rawPostcode) {
+function santisePostcode(rawPostcode) {
     return rawPostcode.replace(/\s+/g, '');
 }
 
@@ -39,7 +49,7 @@ app.get('/', (req,res)=>{
     if (rawPostcode == undefined) {
         res.redirect('/index.html')
     } else {
-        let postcode = santisiePostcode(rawPostcode);
+        let postcode = santisePostcode(rawPostcode);
         res.redirect('/index.html?postcode=' + postcode)
     }
 })

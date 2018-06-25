@@ -13,24 +13,33 @@ app.get('/closestStops', function (req, res) {
     var postcode = req.query.postcode;
     var location = new location_1.Location();
     location.initByPostcode(postcode)
-        .catch(function (err) {
-        throw err;
-    })
         .then(function () {
         return new busstopmap_1.Busstopmap(location).getBusesFromPostcode(2);
+    }, function (err) {
+        console.log("first catch");
+        console.log(err);
+        throw err;
     })
         .catch(function (err) {
+        console.log("second catch");
+        console.log(err);
         throw err;
     })
         .then(function (data) {
         // here we will parse output
+        console.log("foo");
         console.log(data);
-        res.send(JSON.stringify(data));
+        res.send(JSON.stringify({ status: 200, data: data }));
+    })
+        .catch(function (err) {
+        console.log("third catch");
+        console.log(err);
+        res.send(JSON.stringify({ status: 404, data: err }));
     });
 });
 // app.use(express.json());
 // app.use(express.urlencoded());
-function santisiePostcode(rawPostcode) {
+function santisePostcode(rawPostcode) {
     return rawPostcode.replace(/\s+/g, '');
 }
 app.get('/', function (req, res) {
@@ -40,7 +49,7 @@ app.get('/', function (req, res) {
         res.redirect('/index.html');
     }
     else {
-        var postcode = santisiePostcode(rawPostcode);
+        var postcode = santisePostcode(rawPostcode);
         res.redirect('/index.html?postcode=' + postcode);
     }
 });
