@@ -1,7 +1,6 @@
 import {Location} from "./location"
 import {NextBus} from "./nextBus";
 import {BusStop, StopNameWithFutureBuses} from "./busstop";
-
 const request = require('request');
 
 export class Busstopmap {
@@ -10,25 +9,34 @@ export class Busstopmap {
     constructor(public location: Location){}
 
     public findBusstopsNearby(num: number):Promise<void> {
-        return new Promise((resolve)=>{
-            const baseurl = "https://api.tfl.gov.uk/StopPoint";
-            const stopType = "stopTypes=NaptanPublicBusCoachTram";
-            const url = baseurl
-                + "?"
-                + stopType
-                + "&lon="
-                + this.location.lng.toString()
-                + "&lat="
-                + this.location.lat.toString();
+        return new Promise((resolve)=> {
+            const url = this.buildURL();
+            return this.setStopIds(url, num);
+        })
+    }
 
+    private setStopIds(url, num){
+        return new Promise((resolve)=> {
             request(url, (error, response, body) => {
                 const busstops = JSON.parse(body).stopPoints;
                 const nearestBusstops = this.sortByDistance(busstops).slice(0, num)
                 this.stopIds = nearestBusstops.map((stop) => stop.id)
                 resolve();
             });
+        });
+    }
 
-        })
+    private buildURL():string {
+        const baseurl = "https://api.tfl.gov.uk/StopPoint";
+        const stopType = "stopTypes=NaptanPublicBusCoachTram";
+        const url = baseurl
+            + "?"
+            + stopType
+            + "&lon="
+            + this.location.lng.toString()
+            + "&lat="
+            + this.location.lat.toString();
+        return url;
     }
 
     public getBusesFromPostcode(num: number): Promise<StopNameWithFutureBuses[]> {

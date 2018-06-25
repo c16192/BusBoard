@@ -9,15 +9,13 @@ var Busstopmap = /** @class */ (function () {
     Busstopmap.prototype.findBusstopsNearby = function (num) {
         var _this = this;
         return new Promise(function (resolve) {
-            var baseurl = "https://api.tfl.gov.uk/StopPoint";
-            var stopType = "stopTypes=NaptanPublicBusCoachTram";
-            var url = baseurl
-                + "?"
-                + stopType
-                + "&lon="
-                + _this.location.lng.toString()
-                + "&lat="
-                + _this.location.lat.toString();
+            var url = _this.buildURL();
+            return _this.setStopIds(url, num);
+        });
+    };
+    Busstopmap.prototype.setStopIds = function (url, num) {
+        var _this = this;
+        return new Promise(function (resolve) {
             request(url, function (error, response, body) {
                 var busstops = JSON.parse(body).stopPoints;
                 var nearestBusstops = _this.sortByDistance(busstops).slice(0, num);
@@ -25,6 +23,18 @@ var Busstopmap = /** @class */ (function () {
                 resolve();
             });
         });
+    };
+    Busstopmap.prototype.buildURL = function () {
+        var baseurl = "https://api.tfl.gov.uk/StopPoint";
+        var stopType = "stopTypes=NaptanPublicBusCoachTram";
+        var url = baseurl
+            + "?"
+            + stopType
+            + "&lon="
+            + this.location.lng.toString()
+            + "&lat="
+            + this.location.lat.toString();
+        return url;
     };
     Busstopmap.prototype.getBusesFromPostcode = function (num) {
         var _this = this;

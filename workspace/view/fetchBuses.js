@@ -24,38 +24,37 @@ function getStopData() {
     const url = new URL(window.location.href);
     let postcode = url.searchParams.get('postcode');
     document.getElementById("content").innerHTML = postcode;
-    if (postcode === "") {return 1;}
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "http://127.0.0.1:3000/closestStops?postcode="+postcode, false);
-    xhttp.setRequestHeader("Content-type", "application/json");
-    xhttp.send();
-    const response = JSON.parse(xhttp.responseText);
-    console.log(response);
-    if (response.status === 200) {
-        let data = response.data
-        let htmlContent = "";
-        htmlContent += `<div class="jumbotron mt-5">`
-        htmlContent+=`<h1 class="text-center mb-5">Nearby Buses</h1>`
-        htmlContent += "<div class='row'>"
-        for (item of data) {
-            htmlContent += "<div class='col-md-6'>"
-            htmlContent += `<h4 class="text-center">${item.busstopName}</h4>`
-            htmlContent += "<table class='table'><tr><th scope='col'>Line Number</th><th scope='col'>Time to arrive (seconds)</th></tr>";
-            for (let bus of item.nextBuses) {
-                htmlContent += generateRow(bus);
-            }
-            htmlContent += "</table>"
-            htmlContent += "</div>"
-        }
-        htmlContent += "</div>"
-        htmlContent += "</div>"
-        document.getElementById("content").innerHTML = htmlContent;
+    if (postcode === "") {
+        document.getElementById("content").innerHTML = "Enter a post code so that we can find the closest bus stops for you!"
     } else {
-        let err = response.data;
+        const xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "http://127.0.0.1:3000/closestStops?postcode="+postcode, false);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send();
+        const response = JSON.parse(xhttp.responseText);
+        console.log(response);
+        if (response.status === 200) {
+            let data = response.data
+            let htmlContent = "";
+            for (item of data) {
+                htmlContent += "<div class='col-md-6'>"
+                htmlContent += `<h4 class="text-center">${item.busstopName}</h4>`
+                htmlContent += "<table class='table'><tr><th scope='col'>Line Number</th><th scope='col'>Time to arrive (seconds)</th></tr>";
+                for (let bus of item.nextBuses) {
+                    htmlContent += generateRow(bus);
+                }
+                htmlContent += "</table>"
+                htmlContent += "</div>"
+            }
+            document.getElementById("content").innerHTML = htmlContent;
+        } else {
+            let err = response.data;
 
-        document.getElementById("content").innerHTML = err;
+            document.getElementById("content").innerHTML = err;
 
+        }
     }
+
     setTimeout(getStopData, 5000)
 }
 window.onload = getStopData;
