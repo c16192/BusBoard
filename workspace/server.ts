@@ -3,7 +3,11 @@ import {Location} from "./location";
 
 const express = require('express')
 const app = express()
-
+const parser = require("body-parser");
+app.use( parser.json() );
+app.use(parser.urlencoded({
+    extended: true
+}));
 app.get('/closestStops', (req, res) => {
     const postcode: string = req.query.postcode;
     const location = new Location();
@@ -23,8 +27,21 @@ app.get('/closestStops', (req, res) => {
         res.send(JSON.stringify(data))
     });
 })
+// app.use(express.json());
+// app.use(express.urlencoded());
+function santisiePostcode(rawPostcode) {
+    return rawPostcode.replace(/\s+/g, '');
+}
+
 app.get('/', (req,res)=>{
-    res.sendfile("./workspace/view/index.html")
+    let rawPostcode = req.query.postcode;
+    console.log(rawPostcode)
+    if (rawPostcode == undefined) {
+        res.redirect('/index.html')
+    } else {
+        let postcode = santisiePostcode(rawPostcode);
+        res.redirect('/index.html?postcode=' + postcode)
+    }
 })
 app.use(express.static('./workspace/view'))
 

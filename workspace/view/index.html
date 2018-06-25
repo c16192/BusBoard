@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Nearby Buses</title>
-    <script type="text/javascript" src="fetchBuses.js" />
     <script type="javascript">console.log("Hello")</script>
+    <script type="text/javascript" src="fetchBuses.js" />
 </head>
 <body>
 <h1>Nearby Buses</h1>
-
+<form method="GET" action="/">
+    <input id="postcode">
+    <button type="submit">submit</button>
+</form>
 <div id="content"></div>
 </body>
 </html>
